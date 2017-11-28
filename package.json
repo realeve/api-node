@@ -5,7 +5,8 @@
   "private": true,
   "dependencies": {
     "egg": "^2.0.0",
-    "egg-scripts": "^2.1.0"
+    "egg-scripts": "^2.1.0",
+    "koa-compress": "^2.0.0"
   },
   "devDependencies": {
     "autod": "^3.0.1",
