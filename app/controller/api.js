@@ -31,6 +31,7 @@ class ApiController extends Controller {
             type: ctx.helper.isInteger(id)
         });
         ctx.body = data;
+        ctx.status = 201;
     }
 
     async create() {

@@ -19,5 +19,10 @@ module.exports = appInfo => {
         threshold: 1024,
     };
 
+    // 关闭 CSRF 校验，使用JWT验证安全
+    config.security = {
+        csrf: false
+    };
+
     return config;
 };
