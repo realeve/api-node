@@ -13,6 +13,18 @@ class ApiController extends Controller {
         })
         ctx.body = data;
     }
+
+    async api() {
+        const { ctx } = this;
+        const id = ctx.params.id;
+        let data = await ctx.service.api.index();
+        data = Object.assign(data, {
+            id,
+            data: 'api路由测试',
+            type: ctx.helper.isInteger(id)
+        });
+        ctx.body = data;
+    }
 }
 
 module.exports = ApiController;

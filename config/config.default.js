@@ -12,6 +12,8 @@ module.exports = appInfo => {
     // config.gzip = {
     //     threshold: 1024,
     // }
+
+    // 中间件：响应时间、gzip压缩
     config.middleware = ['response', 'compress'];
     config.compress = {
         threshold: 1024,
