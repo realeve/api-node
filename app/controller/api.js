@@ -14,7 +14,14 @@ class ApiController extends Controller {
         ctx.body = data;
     }
 
-    async api() {
+    async options() {
+        const { ctx } = this;
+        ctx.body = {
+            type: 'options'
+        }
+    }
+
+    async show() {
         const { ctx } = this;
         const id = ctx.params.id;
         let data = await ctx.service.api.index();
@@ -24,6 +31,30 @@ class ApiController extends Controller {
             type: ctx.helper.isInteger(id)
         });
         ctx.body = data;
+    }
+
+    async create() {
+        const { ctx } = this;
+
+        ctx.body = {
+            type: 'post'
+        }
+    }
+
+    async update() {
+        const { ctx } = this;
+
+        ctx.body = {
+            type: 'put'
+        }
+    }
+
+    async destroy() {
+        const { ctx } = this;
+
+        ctx.body = {
+            type: 'delete'
+        }
     }
 }
 
