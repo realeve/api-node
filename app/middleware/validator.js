@@ -29,13 +29,14 @@ module.exports = options => {
 
     async function update(ctx, next) {
 
-        const query = ctx.query;
+        const body = ctx.request.body;
         const rules = {
-            condition: { type: 'object' }
+            condition: { type: 'json' }
         };
+
         try {
             ctx.validate(rules, {
-                condition: query.condition
+                condition: body.condition
             });
         } catch (err) {
             ctx.logger.warn(err.errors);
