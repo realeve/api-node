@@ -7,7 +7,7 @@ module.exports = appInfo => {
     config.keys = appInfo.name + '_1511836451261_6421';
 
     // 中间件：响应时间、gzip压缩
-    config.middleware = ['response', 'compress', 'ignoreRobot'];
+    config.middleware = ['response', 'ignoreRobot', 'compress'];
     config.compress = {
         threshold: 1024,
     };
@@ -20,12 +20,12 @@ module.exports = appInfo => {
 
     // 关闭 CSRF 校验，使用JWT验证安全
     config.security = {
-        // csrf: false,
+        csrf: false,
         domainWhiteList: ['http://localhost:90'],
     };
 
     config.ignoreRobot = {
-        enabled: false
+        enable: false
     };
 
     return config;

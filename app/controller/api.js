@@ -25,14 +25,14 @@ class ApiController extends Controller {
         const { ctx } = this;
         const id = ctx.params.id;
         const query = ctx.query;
+
         const queries = ctx.queries;
         let data = await ctx.service.api.index();
         data = Object.assign(data, {
             id,
             query,
             queries,
-            data: 'api路由测试',
-            type: ctx.helper.isInteger(id)
+            data: 'api路由测试'
         });
         ctx.body = data;
         ctx.status = 200;
