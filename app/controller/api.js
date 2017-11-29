@@ -5,10 +5,10 @@ const Controller = require('egg').Controller;
 class ApiController extends Controller {
     async index() {
         const ctx = this.ctx;
-        const id = ctx.query.id;
+        const query = ctx.query;
         let data = await ctx.service.api.index();
         data = Object.assign(data, {
-            id,
+            query,
             data: '中文内容测试'
         })
         ctx.body = data;
@@ -24,22 +24,29 @@ class ApiController extends Controller {
     async show() {
         const { ctx } = this;
         const id = ctx.params.id;
+        const query = ctx.query;
+        const queries = ctx.queries;
         let data = await ctx.service.api.index();
         data = Object.assign(data, {
             id,
+            query,
+            queries,
             data: 'api路由测试',
             type: ctx.helper.isInteger(id)
         });
         ctx.body = data;
-        ctx.status = 201;
+        ctx.status = 200;
     }
 
     async create() {
         const { ctx } = this;
-
+        const reqInfo = ctx.request.body;
         ctx.body = {
-            type: 'post'
-        }
+            type: 'post',
+            reqInfo,
+            header: ctx.header
+        };
+        ctx.status = 201;
     }
 
     async update() {
