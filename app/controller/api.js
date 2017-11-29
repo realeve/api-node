@@ -49,11 +49,25 @@ class ApiController extends Controller {
         ctx.status = 201;
     }
 
+
+    /*
+        调用：
+        var dataUrl = 'http://localhost:7001/api';
+        var option = {
+            url: dataUrl,
+            method: 'put',
+            data: { condition: { id: 1 } }
+        }
+
+        axios(option).then(res => {
+            console.log(res.data);
+        });
+    */
     async update() {
         const { ctx } = this;
-
         ctx.body = {
-            type: 'put'
+            type: 'put',
+            condition: ctx.request.body.condition
         }
     }
 

@@ -31,7 +31,7 @@ module.exports = options => {
 
         const body = ctx.request.body;
         const rules = {
-            condition: { type: 'json' }
+            condition: { type: 'object' }
         };
 
         try {
