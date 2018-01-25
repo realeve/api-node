@@ -29,8 +29,12 @@ class ApiController extends Controller {
 
         const queries = ctx.queries;
         let data = await ctx.service.api.index();
+
+        const sql = await ctx.service.api.getSqlSetting(id);
+
         data = Object.assign(data, {
             id,
+            sql,
             query,
             queries,
             data: "api路由测试"
@@ -69,6 +73,7 @@ class ApiController extends Controller {
             type: "put",
             condition: ctx.request.body.condition
         };
+        ctx.status = 204;
     }
 
     async destroy() {

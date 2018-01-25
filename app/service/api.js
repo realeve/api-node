@@ -7,6 +7,11 @@ class ApiService extends Service {
         const key = this.config.keys;
         return { key };
     }
+
+    async getSqlSetting(id) {
+        const data = await this.app.mysql.query('select * from sys_api where id = ?', [id]);
+        return data[0];
+    }
 }
 
 module.exports = ApiService;
