@@ -16,25 +16,34 @@ class ApiController extends Controller {
     }
 
     async options() {
-        const { ctx } = this;
+        const {
+            ctx
+        } = this;
         ctx.body = {
             type: "options"
         };
     }
 
     async show() {
-        const { ctx } = this;
+        const {
+            ctx
+        } = this;
         const id = ctx.params.id;
         const query = ctx.query;
-
         const queries = ctx.queries;
         let data = await ctx.service.api.index();
 
-        const sql = await ctx.service.api.getSqlSetting(id);
+        const sql = await ctx.service.api.getSqlSetting(id, query.nonce);
+        const validate = ctx.service.api.validateAPISetting(sql, ctx);
+
+        if (!validate) {
+            return;
+        }
 
         data = Object.assign(data, {
             id,
             sql,
+            validate,
             query,
             queries,
             data: "api路由测试"
@@ -44,7 +53,9 @@ class ApiController extends Controller {
     }
 
     async create() {
-        const { ctx } = this;
+        const {
+            ctx
+        } = this;
         const reqInfo = ctx.request.body;
         ctx.body = {
             type: "post",
@@ -68,7 +79,9 @@ class ApiController extends Controller {
             });
         */
     async update() {
-        const { ctx } = this;
+        const {
+            ctx
+        } = this;
         ctx.body = {
             type: "put",
             condition: ctx.request.body.condition
@@ -77,7 +90,9 @@ class ApiController extends Controller {
     }
 
     async destroy() {
-        const { ctx } = this;
+        const {
+            ctx
+        } = this;
 
         ctx.body = {
             type: "delete"
