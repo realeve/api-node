@@ -9,19 +9,38 @@ class ApiService extends Service {
     }
 
     async getSqlSetting(id, nonce) {
-        return await this.app.mysql.query("select db_id*1 id,api_name title,param,sqlStr as 'sql'from sys_api where id = ? and nonce=?", [id, nonce]);
+        const sql = `SELECT
+            api_name title,
+            param,
+            sqlStr AS 'sql',
+            b.db_name,
+            b.db_key,
+            b.db_type,
+            b.db_host,
+            b.db_username,
+            b.db_password,
+            b.db_port,
+            b.db_database
+        FROM
+            sys_api a
+        INNER JOIN sys_database b ON a.db_id = b.id
+        WHERE
+            a.id = ?
+        AND a.nonce =?`;
+
+        const data = await this.app.mysql.query(sql, [id, nonce]);
+        return data[0]
     }
 
     validateAPISetting(sql, ctx) {
         // is noncer valid
-        if (!sql.length) {
+        if (!sql) {
             ctx.body = {
                 msg: 'Unauthorized,noncer is error.'
             };
             ctx.status = 401;
             return false;
         }
-        sql = sql[0];
 
         // param valid
         if (Reflect.get(sql, 'param')) {
