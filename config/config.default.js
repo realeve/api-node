@@ -1,5 +1,7 @@
 'use strict';
 
+const mysqlConfig = require('../app/database/mysql');
+
 module.exports = appInfo => {
     const config = exports = {};
 
@@ -27,6 +29,8 @@ module.exports = appInfo => {
     config.ignoreRobot = {
         enable: false
     };
+
+    config.mysql = mysqlConfig;
 
     return config;
 };

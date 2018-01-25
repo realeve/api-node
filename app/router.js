@@ -15,6 +15,12 @@ module.exports = app => {
     // api列表
     router.get("/api/", controller.api.index);
 
+    // mysql测试
+    router.get("/api/mysql", controller.api.mysql);
+
+    // mssql测试
+    router.get("/api/mssql", controller.api.mssql);
+
     // 获取指定ID数据
     router.get("/api/:id", validator.query, controller.api.show);
 

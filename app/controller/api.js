@@ -1,6 +1,7 @@
 "use strict";
 
 const Controller = require("egg").Controller;
+const mssql = require('../database/mssql');
 
 class ApiController extends Controller {
     async index() {
@@ -75,6 +76,28 @@ class ApiController extends Controller {
 
         ctx.body = {
             type: "delete"
+        };
+    }
+
+    async mssql() {
+        const data = await mssql.query("select * from tblApi");
+
+        this.ctx.body = data;
+    }
+
+    async mysql() {
+        const data = await this.app.mysql.query("select * from sys_api");
+        const header = (() => {
+            if (!data.length) {
+                return [];
+            }
+            return Object.keys(data[0]);
+        })();
+
+        this.ctx.body = {
+            rows: data.length,
+            header,
+            data
         };
     }
 }
