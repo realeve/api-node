@@ -6,13 +6,7 @@ const mssql = require('../database/mssql');
 class ApiController extends Controller {
     async index() {
         const ctx = this.ctx;
-        const query = ctx.query;
-        let data = await ctx.service.api.index();
-        data = Object.assign(data, {
-            query,
-            data: "中文内容测试"
-        });
-        ctx.body = data;
+        ctx.body = 'hello world';
     }
 
     async options() {
@@ -29,26 +23,21 @@ class ApiController extends Controller {
             ctx
         } = this;
         const id = ctx.params.id;
-        const query = ctx.query;
-        const queries = ctx.queries;
-        let data = await ctx.service.api.index();
-
-        const sql = await ctx.service.api.getSqlSetting(id, query.nonce);
+        const sql = await ctx.service.api.getSqlSetting(id, ctx.query.nonce);
         const validate = ctx.service.api.validateAPISetting(sql, ctx);
-
         if (!validate) {
             return;
         }
 
-        data = Object.assign(data, {
-            id,
-            sql,
-            validate,
-            query,
-            queries,
-            data: "api路由测试"
-        });
-        ctx.body = data;
+        const data = await ctx.service.api.getAPIData(sql, ctx);
+
+        ctx.body = {
+            data,
+            rows: data.length,
+            source: '数据来源:' + sql.db_name,
+            title: sql.title,
+        };
+
         ctx.status = 200;
     }
 
@@ -106,7 +95,7 @@ class ApiController extends Controller {
     }
 
     async mysql() {
-        const data = await this.app.mysql.query("select * from sys_api");
+        const data = await this.app.mysql.get(this.config.APIDB_KEY).query("select * from sys_api");
         const header = (() => {
             if (!data.length) {
                 return [];

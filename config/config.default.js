@@ -32,5 +32,8 @@ module.exports = appInfo => {
 
     config.mysql = mysqlConfig;
 
+    // api管理数据库的键值，默认为db1
+    config.APIDB_KEY = 'db1';
+
     return config;
 };
