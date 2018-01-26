@@ -69,7 +69,7 @@ class ApiService extends Service {
 
     // 按param顺序处理查询参数
     handleAPIParams(param, ctx) {
-        let query = ctx.query;
+        let query = _.cloneDeep(ctx.query);
         const queries = _.cloneDeep(ctx.queries);
         Object.keys(queries).forEach(item => {
             queries[item] = queries[item].length ? queries[item] : queries[item][0]
@@ -85,12 +85,24 @@ class ApiService extends Service {
     }
 
     async getAPIData(sql, ctx) {
+        let data = [];
         if (sql.db_type === 'mysql') {
-            return await this.getDataFromMySQL(sql, ctx);
+            data = await this.getDataFromMySQL(sql, ctx);
         }
-        return [{
-            msg: 'unknown type of database type : ' + sql.db_type
-        }]
+
+        // data = [{
+        //     msg: 'unknown type of database type : ' + sql.db_type
+        // }]
+
+        return this.handleData(data, ctx);
+    }
+
+    handleData(data, ctx) {
+        const header = data.length ? Object.keys(data[0]) : [];
+        if (ctx.query.mode === 'array') {
+            data = data.map(item => Object.values(item));
+        }
+        return { header, data }
     }
 
 }

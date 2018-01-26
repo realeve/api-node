@@ -29,18 +29,12 @@ class ApiController extends Controller {
             return;
         }
 
-        const data = await ctx.service.api.getAPIData(sql, ctx);
-        const header = (() => {
-            if (!data.length) {
-                return [];
-            }
-            return Object.keys(data[0]);
-        })();
+        const result = await ctx.service.api.getAPIData(sql, ctx);
 
         ctx.body = {
-            data,
-            header,
-            rows: data.length,
+            data: result.data,
+            header: result.header,
+            rows: result.data.length,
             source: '数据来源:' + sql.db_name,
             title: sql.title,
         };
