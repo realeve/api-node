@@ -75,7 +75,7 @@ class ApiService extends Service {
             queries[item] = queries[item].length ? queries[item] : queries[item][0]
         });
         query = Object.assign(query, queries);
-        return param.split(',').map(item => query.item);
+        return param.split(',').map(item => query[item]);
     }
 
     async getDataFromMySQL(sql, ctx) {

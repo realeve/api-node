@@ -6,8 +6,10 @@ module.exports = () => {
         ctx.set('X-Response-Time', delta + 'ms');
 
         // 只对json数据做此处理
-        if (ctx.response.header['content-type'].includes('application/json')) {
-            ctx.body = ctx.body.replace('{', `{"xResponseTime":"${delta}ms",`);
-        }
+        // const isJSON = ctx.response.header['content-type'].includes('application/json');
+        // if (isJSON) {
+        // gzip压缩的数据会报错
+        //     ctx.body = ctx.body.replace('{', `{"xResponseTime":"${delta}ms",`);
+        // }
     }
 }

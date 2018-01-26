@@ -30,9 +30,16 @@ class ApiController extends Controller {
         }
 
         const data = await ctx.service.api.getAPIData(sql, ctx);
+        const header = (() => {
+            if (!data.length) {
+                return [];
+            }
+            return Object.keys(data[0]);
+        })();
 
         ctx.body = {
             data,
+            header,
             rows: data.length,
             source: '数据来源:' + sql.db_name,
             title: sql.title,
