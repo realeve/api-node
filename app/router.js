@@ -18,6 +18,9 @@ module.exports = app => {
     // mssql测试
     router.get("/api/mssql", controller.api.mssql);
 
+    // orcl测试
+    router.get("/api/orcl", controller.api.orcl);
+
     // 获取指定ID数据
     router.get("/api/:id", validator.query, controller.api.show);
 

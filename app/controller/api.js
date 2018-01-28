@@ -2,6 +2,7 @@
 
 const Controller = require("egg").Controller;
 const mssql = require('../database/mssql');
+const orcl = require('../database/oracle');
 
 class ApiController extends Controller {
     async index() {
@@ -95,20 +96,10 @@ class ApiController extends Controller {
         this.ctx.body = data;
     }
 
-    async mysql() {
-        const data = await this.app.mysql.get(this.config.APIDB_KEY).query("select * from sys_api");
-        const header = (() => {
-            if (!data.length) {
-                return [];
-            }
-            return Object.keys(data[0]);
-        })();
-
-        this.ctx.body = {
-            rows: data.length,
-            header,
-            data
-        };
+    async orcl() {
+        const data = await orcl.query('select * from tbl_user');
+        console.log(data)
+        this.ctx.body = data
     }
 }
 
