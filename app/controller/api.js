@@ -19,6 +19,9 @@ class ApiController extends Controller {
         };
     }
 
+    // orcl:http://localhost:7001/api/20?nonce=cfa450c2d0&mode=object
+    // mysql:http://localhost:7001/api/3/?nonce=e4e497e849
+    // http://localhost:7001/api/13/?nonce=e7bfeab257&uid=3&task_id=1&mode=array
     async show() {
         const {
             ctx

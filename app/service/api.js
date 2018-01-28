@@ -96,13 +96,23 @@ class ApiService extends Service {
 
     async getAPIData(sql, ctx) {
         let result = [];
-
+        ctx.query.mode = ctx.query.mode || 'array';
         switch (sql.db_type) {
             case 'mysql':
                 result = await this.getDataFromMySQL(sql, ctx);
+                result = this.handleData(result, ctx);
                 break;
             case 'orcl':
                 result = await this.getDataFromOrcl(sql, ctx);
+                if (ctx.query.mode === 'object') {
+                    result.data = result.data.map(item => {
+                        const obj = {};
+                        result.header.forEach((key, i) => {
+                            obj[key] = item[i]
+                        })
+                        return obj;
+                    });
+                }
                 break;
             default:
                 break;
