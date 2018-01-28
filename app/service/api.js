@@ -2,6 +2,7 @@
 
 const Service = require('egg').Service;
 const _ = require('lodash');
+const orcl = require('../database/oracle');
 
 class ApiService extends Service {
     async index() {
@@ -10,11 +11,6 @@ class ApiService extends Service {
     }
 
     async getSqlSetting(id, nonce) {
-        //     b.db_host,
-        //     b.db_username,
-        //     b.db_password,
-        //     b.db_port,
-        //     b.db_database
         const sql = `SELECT
             api_name title,
             param,
@@ -69,6 +65,10 @@ class ApiService extends Service {
 
     // 按param顺序处理查询参数
     handleAPIParams(param, ctx) {
+        param = param || '';
+        if (!param.trim().length) {
+            return [];
+        }
         let query = _.cloneDeep(ctx.query);
         const queries = _.cloneDeep(ctx.queries);
         Object.keys(queries).forEach(item => {
@@ -81,28 +81,41 @@ class ApiService extends Service {
     async getDataFromMySQL(sql, ctx) {
         const client = this.app.mysql.get(sql.db_key);
         const params = this.handleAPIParams(sql.param, ctx);
-        return await client.query(sql.sql, params);
+        const data = await client.query(sql.sql, params);
+        const header = data.length ? Object.keys(data[0]) : [];
+        return {
+            data,
+            header
+        }
+    }
+
+    async getDataFromOrcl(sql, ctx) {
+        const params = this.handleAPIParams(sql.param, ctx);
+        return await orcl.query(sql, params);
     }
 
     async getAPIData(sql, ctx) {
-        let data = [];
-        if (sql.db_type === 'mysql') {
-            data = await this.getDataFromMySQL(sql, ctx);
+        let result = [];
+
+        switch (sql.db_type) {
+            case 'mysql':
+                result = await this.getDataFromMySQL(sql, ctx);
+                break;
+            case 'orcl':
+                result = await this.getDataFromOrcl(sql, ctx);
+                break;
+            default:
+                break;
         }
 
-        // data = [{
-        //     msg: 'unknown type of database type : ' + sql.db_type
-        // }]
-
-        return this.handleData(data, ctx);
+        return this.handleData(result, ctx);
     }
 
-    handleData(data, ctx) {
-        const header = data.length ? Object.keys(data[0]) : [];
+    handleData(result, ctx) {
         if (ctx.query.mode === 'array') {
-            data = data.map(item => Object.values(item));
+            result.data = result.data.map(item => Object.values(item));
         }
-        return { header, data }
+        return result
     }
 
 }

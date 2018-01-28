@@ -1,12 +1,4 @@
-// 获取orcl连接设置
-const getOrclConfig = config => {
-    let port = config.port || 1521;
-    return {
-        user: config.user,
-        password: config.password,
-        connectString: `${config.host}:${config.port}/${config.sid}`
-    }
-}
+const util = require('../../public/util');
 
 const db1 = {
     user: "orcl",
@@ -17,5 +9,5 @@ const db1 = {
 }
 
 module.exports = {
-    db1: getOrclConfig(db1)
+    db1: util.getOrclConfig(db1)
 }

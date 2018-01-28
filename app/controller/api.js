@@ -97,9 +97,9 @@ class ApiController extends Controller {
     }
 
     async orcl() {
-        const data = await orcl.query('select * from tbl_user');
-        console.log(data)
-        this.ctx.body = data
+        // const data = await orcl.query('select * from "tbl_user" a where a."id"=?', [3]);
+        const data = await orcl.query('select * from "tbl_user" a ');
+        this.ctx.body = data;
     }
 }
 

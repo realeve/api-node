@@ -1,7 +1,7 @@
 {
     "extends": "eslint-config-egg",
     "rules": {
-        "indent": [2, 4],
+        "indent": 0,
         "array-bracket-spacing": [2, "never"],
         "linebreak-style": [0, "windows"],
         "quotes": 0,

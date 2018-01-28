@@ -11,13 +11,21 @@ const handleSql = sql => {
     return sql;
 }
 
-const query = async(sqlStr, params = []) => {
-    const conn = await oracledb.getConnection(config.db1);
-    const result = await conn.execute(handleSql(sqlStr), params);
-    const data = result.rows
+
+const query = async(sql, params = []) => {
+    if (typeof sql === 'string') {
+        sql = {
+            sql,
+            db_key: 'db1'
+        }
+    }
+    const conn = await oracledb.getConnection(config[sql.db_key]);
+    const result = await conn.execute(handleSql(sql.sql), params);
+    await conn.release();
+    const data = result.rows;
     return {
         rows: data.length,
-        header: data.length === 0 ? [] : Object.keys(data[0]),
+        header: result.metaData.map(item => item.name),
         data
     };
 };

@@ -12,6 +12,7 @@
     "jsonwebtoken": "^8.1.0",
     "koa-compress": "^2.0.0",
     "mssql": "^4.1.0",
+    "oracledb": "^2.0.15",
     "ua_parser": "^1.2.3"
   },
   "devDependencies": {
