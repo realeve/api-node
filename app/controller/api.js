@@ -22,6 +22,8 @@ class ApiController extends Controller {
     // orcl:http://localhost:7001/api/20?nonce=cfa450c2d0&mode=object
     // mysql:http://localhost:7001/api/3/?nonce=e4e497e849
     // http://localhost:7001/api/13/?nonce=e7bfeab257&uid=3&task_id=1&mode=array
+    // mssql:http://localhost:7001/api/21?nonce=e0db8c647f&aid=3&author=develop
+
     async show() {
         const {
             ctx
@@ -35,13 +37,11 @@ class ApiController extends Controller {
 
         const result = await ctx.service.api.getAPIData(sql, ctx);
 
-        ctx.body = {
-            data: result.data,
-            header: result.header,
+        ctx.body = Object.assign({
             rows: result.data.length,
             source: '数据来源:' + sql.db_name,
             title: sql.title,
-        };
+        }, result);
 
         ctx.status = 200;
     }
@@ -94,7 +94,13 @@ class ApiController extends Controller {
     }
 
     async mssql() {
-        const data = await mssql.query("select * from tblApi");
+        const data = await mssql.query({
+            sql: "select * from tblApi",
+            db_username: 'sa',
+            db_password: '123',
+            db_host: '127.0.0.1',
+            db_database: 'api'
+        });
 
         this.ctx.body = data;
     }

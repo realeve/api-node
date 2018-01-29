@@ -3,6 +3,7 @@
 const Service = require('egg').Service;
 const _ = require('lodash');
 const orcl = require('../database/oracle');
+const mssql = require('../database/mssql');
 
 class ApiService extends Service {
     async index() {
@@ -10,6 +11,7 @@ class ApiService extends Service {
         return { key };
     }
 
+    // oracle及mssql数据库将把数据库设置信息作为参数请求查询。
     async getSqlSetting(id, nonce) {
         const sql = `SELECT
             api_name title,
@@ -17,7 +19,12 @@ class ApiService extends Service {
             sqlStr AS 'sql',
             b.db_name,
             b.db_key,
-            b.db_type
+            b.db_type,
+            b.db_username,
+            b.db_password,
+            b.db_host,
+            b.db_database,
+            b.db_port
         FROM
             sys_api a
         INNER JOIN sys_database b ON a.db_id = b.id
@@ -72,15 +79,14 @@ class ApiService extends Service {
         let query = _.cloneDeep(ctx.query);
         const queries = _.cloneDeep(ctx.queries);
         Object.keys(queries).forEach(item => {
-            queries[item] = queries[item].length ? queries[item] : queries[item][0]
+            queries[item] = queries[item].length === 1 ? queries[item][0] : queries[item]
         });
         query = Object.assign(query, queries);
         return param.split(',').map(item => query[item]);
     }
 
-    async getDataFromMySQL(sql, ctx) {
+    async getDataFromMySQL(sql, params) {
         const client = this.app.mysql.get(sql.db_key);
-        const params = this.handleAPIParams(sql.param, ctx);
         const data = await client.query(sql.sql, params);
         const header = data.length ? Object.keys(data[0]) : [];
         return {
@@ -89,21 +95,17 @@ class ApiService extends Service {
         }
     }
 
-    async getDataFromOrcl(sql, ctx) {
-        const params = this.handleAPIParams(sql.param, ctx);
-        return await orcl.query(sql, params);
-    }
-
     async getAPIData(sql, ctx) {
         let result = [];
         ctx.query.mode = ctx.query.mode || 'array';
+        const params = this.handleAPIParams(sql.param, ctx);
         switch (sql.db_type) {
             case 'mysql':
-                result = await this.getDataFromMySQL(sql, ctx);
+                result = await this.getDataFromMySQL(sql, params);
                 result = this.handleData(result, ctx);
                 break;
             case 'orcl':
-                result = await this.getDataFromOrcl(sql, ctx);
+                result = await orcl.query(sql, params);
                 if (ctx.query.mode === 'object') {
                     result.data = result.data.map(item => {
                         const obj = {};
@@ -113,11 +115,12 @@ class ApiService extends Service {
                         return obj;
                     });
                 }
-                break;
+                // oracle 默认按array查询数据
+                return result;
             default:
+                result = await mssql.query(sql, params);
                 break;
         }
-
         return this.handleData(result, ctx);
     }
 
