@@ -22,7 +22,9 @@ module.exports = app => {
     router.get("/api/orcl", controller.api.orcl);
 
     // 获取指定ID数据
-    router.get("/api/:id", validator.query, controller.api.show);
+    router.get("/api/:id/:nonce.json", validator.query, controller.api.show);
+    router.get("/api/:id/:nonce.html", validator.query, controller.api.show);
+    router.get("/api/:id/:nonce", validator.query, controller.api.show);
 
     // 插入数据
     router.post("/api/", controller.api.create);

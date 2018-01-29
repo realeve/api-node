@@ -7,7 +7,7 @@
 module.exports = options => {
     async function query(ctx, next) {
         const id = ctx.params.id;
-        const query = ctx.query;
+        const nonce = ctx.params.nonce;
         const rules = {
             id: { type: 'id' },
             nonce: { type: 'string' }
@@ -15,7 +15,7 @@ module.exports = options => {
         try {
             ctx.validate(rules, {
                 id,
-                nonce: query.nonce
+                nonce
             });
         } catch (err) {
             ctx.logger.warn(err.errors);

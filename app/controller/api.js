@@ -19,17 +19,19 @@ class ApiController extends Controller {
         };
     }
 
-    // orcl:http://localhost:7001/api/20?nonce=cfa450c2d0&mode=object
-    // mysql:http://localhost:7001/api/3/?nonce=e4e497e849
-    // http://localhost:7001/api/13/?nonce=e7bfeab257&uid=3&task_id=1&mode=array
-    // mssql:http://localhost:7001/api/21?nonce=e0db8c647f&aid=3&author=develop
+    // orcl:http://localhost:7001/api/20/cfa450c2d0?mode=object
+    // mysql:http://localhost:7001/api/3/e4e497e849
+    // http://localhost:7001/api/13/e7bfeab257?uid=3&task_id=1&mode=array
+    // mssql:http://localhost:7001/api/21/e0db8c647f.html?aid=3&author=develop
 
     async show() {
         const {
             ctx
         } = this;
         const id = ctx.params.id;
-        const sql = await ctx.service.api.getSqlSetting(id, ctx.query.nonce);
+        const nonce = ctx.params.nonce;
+
+        const sql = await ctx.service.api.getSqlSetting(id, nonce);
         const validate = ctx.service.api.validateAPISetting(sql, ctx);
         if (!validate) {
             return;
