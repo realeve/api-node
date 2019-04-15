@@ -5,50 +5,49 @@
  */
 
 module.exports = options => {
-    async function query(ctx, next) {
-        const id = ctx.params.id;
-        const nonce = ctx.params.nonce;
-        const rules = {
-            id: { type: 'id' },
-            nonce: { type: 'string' }
-        };
-        try {
-            ctx.validate(rules, {
-                id,
-                nonce
-            });
-        } catch (err) {
-            ctx.logger.warn(err.errors);
-            ctx.body = { errMsg: err.errors };
-            ctx.status = 422;
-            return;
-        }
+  async function query(ctx, next) {
+    const { id, nonce } = ctx.params;
 
-        await next();
+    const rules = {
+      id: { type: 'id' },
+      nonce: { type: 'string' }
+    };
+    try {
+      ctx.validate(rules, {
+        id,
+        nonce
+      });
+    } catch (err) {
+      ctx.logger.warn(err.errors);
+      ctx.body = { errMsg: err.errors };
+      ctx.status = 422;
+      return;
     }
 
-    async function update(ctx, next) {
+    await next();
+  }
 
-        const body = ctx.request.body;
-        const rules = {
-            condition: { type: 'object' }
-        };
+  async function update(ctx, next) {
+    const body = ctx.request.body;
+    const rules = {
+      condition: { type: 'object' }
+    };
 
-        try {
-            ctx.validate(rules, {
-                condition: body.condition
-            });
-        } catch (err) {
-            ctx.logger.warn(err.errors);
-            ctx.body = { errMsg: err.errors };
-            ctx.status = 422;
-            return;
-        }
-
-        await next();
+    try {
+      ctx.validate(rules, {
+        condition: body.condition
+      });
+    } catch (err) {
+      ctx.logger.warn(err.errors);
+      ctx.body = { errMsg: err.errors };
+      ctx.status = 422;
+      return;
     }
-    return {
-        query,
-        update
-    }
-}
+
+    await next();
+  }
+  return {
+    query,
+    update
+  };
+};

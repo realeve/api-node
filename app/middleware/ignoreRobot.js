@@ -10,7 +10,7 @@ module.exports = options => {
         // ctx.body.ip = ctx.ip;
 
         // 屏蔽爬虫数据请求
-        if (options.enable && env.browser.name == 'unknown') {
+        if (options.enable && env.browser.name === 'unknown') {
             ctx.body.isRobot = true;
             ctx.body = {
                 errMsg: 'Forbidden'
